@@ -1,0 +1,16 @@
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+.task-list {
+  list-style-type: none;
+  padding: 0;
+}
+.task-item {
+  display: flex;
+  margin: 5px 0;
+}
+
+.task-button {
+  margin-left: 10px;
+}
