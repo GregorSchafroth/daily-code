@@ -1,0 +1,21 @@
+body {
+  font-family: sans-serif;
+  background-color: #FFFFF0;
+}
+
+input {
+  font-size: 30px;
+}
+
+button {
+  font-size: 30px;
+}
+
+li {
+ font-size: 30px;
+ margin-top: 5px;
+}
+
+.remove-button {
+  margin-left: 20px;
+}
