@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <style>
+      .transcript {
+        border: 1px solid #ccc;
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .transcript-header {
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+      .message {
+        margin: 5px 0;
+      }
+      .human {
+        color: blue;
+      }
+      .ai {
+        color: green;
+      }
+      .transcript-time {
+        font-size: 0.8em;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Dashboard</h1>
+    <h2>Welcome, {{ current_user.username }}</h2>
+    <a href="/logout">Logout</a>
+    <h3>Your Transcripts</h3>
+    {% for transcript_id, transcript in transcripts.items() %}
+    <div class="transcript">
+      <div class="transcript-header">
+        Session ID: {{ transcript.session_id }}
+        <div class="transcript-time">
+          Created at: {{ transcript.created_at }}
+        </div>
+      </div>
+      {% for message in transcript.messages %}
+      <div
+        class="message {% if message.message.startswith('Human:') %}human{% else %}ai{% endif %}"
+      >
+        {{ message.message }}
+        <span class="transcript-time">{{ message.start_time }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </body>
+</html>
