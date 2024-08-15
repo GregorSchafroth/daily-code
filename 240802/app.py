@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import requests
 import os
@@ -11,28 +10,31 @@ api_key = os.getenv('API_KEY')
 project_id = os.getenv('PROJECT_ID')
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your_secret_key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
-db = SQLAlchemy(app)
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(150), unique=True, nullable=False)
-    password = db.Column(db.String(150), nullable=False)
+env_username = os.getenv('USERNAME')
+env_password = os.getenv('PASSWORD')
 
+class User(UserMixin):
+    def __init__(self, username):
+        self.id = username
+        self.username = username
+        
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    if user_id == env_username:
+        return User(user_id)
+    return None
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        user = User.query.filter_by(username=username).first()
-        if user and user.password == password:
+        if username == env_username and password == env_password:
+            user = User(username)
             login_user(user)
             return redirect(url_for('dashboard'))
         flash('Invalid credentials')
@@ -107,9 +109,5 @@ def parse_transcripts(all_transcripts):
     
     return grouped_transcripts
 
-
-
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-    app.run(debug=True)
+    app.run()
